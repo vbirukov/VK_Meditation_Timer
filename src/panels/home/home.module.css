@@ -1,0 +1,22 @@
+.flexCenter {
+	display: flex;
+	justify-content: center;
+}
+.width100 {
+	width: 100%;
+}
+.textCenter {
+    text-align: center;
+}
+.sliderScale {
+	display: flex;
+	justify-content: space-between;
+}
+.sliderMinTime {
+	position: relative;
+	left: 0;
+}
+.sliderMaxTime {
+	position: relative;
+	right: 0;
+}

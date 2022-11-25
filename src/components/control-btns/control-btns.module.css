@@ -1,0 +1,17 @@
+.flexCenter {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.controlButton {
+	border-radius: 50%;
+	width: 65px;
+	height: 65px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	background-color: var(--button_primary_background);
+	margin-bottom: 12px;
+}
