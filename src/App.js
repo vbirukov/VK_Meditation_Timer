@@ -34,12 +34,18 @@ const App = () => {
 
 		fetchData().then((user) => {
 			getConfig(user.id).then((userConfig) => {
-				if (!userConfig) {
+				if (userConfig) {
+					applyConfig();
+				} else {
 					createUserConfig(user);
 				}
 			});
 		});
 	}, []);
+
+	const applyConfig = function (userConfig) {
+		// dispatch user config to store
+	}
 
 	const getConfig = async function (userId) {
 
