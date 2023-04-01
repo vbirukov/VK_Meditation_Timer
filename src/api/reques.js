@@ -13,22 +13,67 @@ const fetchUser = async function() {
     });
 }
 
-export const updateLastTimer = function(userId, timerValue) {
-    const response = fetch('https://d5dkgim47m3sjaq4k4s3.apigw.yandexcloud.net/setlasttimer', {
+const callYandexApi = async function ({endpoint, body}) {
+    const response = await fetch(`https://d5dkgim47m3sjaq4k4s3.apigw.yandexcloud.net${endpoint ? '/' + endpoint : ''}`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify(body)
+    });
+
+    if (response.ok) { // если HTTP-статус в диапазоне 200-299
+        let json = await response.json();
+        console.log(JSON.stringify)
+    } else {
+        alert("Ошибка HTTP: " + response.status);
+    }
+    return response;
+}
+
+export const updateLastTimer = function(userId, timerValue) {
+
+    return callYandexApi({
+        endpoint: 'setlasttimer',
+        body: {
             $id: userId,
-            $value: timerValue,
-        })
-    }).then((result) => {
-        if (!response.ok) { // если HTTP-статус в диапазоне 200-299
-            console.log("Ошибка HTTP при отправке данных: " + response.status);
+            $value: timerValue
+        }
+    });
+}
+
+const getConfig = async function (userId) {
+
+    // TODO добавить в callYandexApi опцию GET запроса
+    const response = await fetch('https://functions.yandexcloud.net/d4egmdhjt35ibg2b0ao5', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({id: fetchedUser.id})
+    });
+
+    if (response.ok) { // если HTTP-статус в диапазоне 200-299
+        // получаем тело ответа (см. про этот метод ниже)
+        let json = await response.json();
+    } else {
+        alert("Ошибка HTTP: " + response.status);
+    }
+
+    return response;
+};
+
+const createUserConfig = async function (user) {
+
+    return callYandexApi({
+        endpoint: 'user',
+        body: {
+            $id: user.id,
+            $value: user.first_name + ' ' + user.last_name
         }
     });
 }
 
 export default fetchUser;
+export {updateLastTimer, getConfig, createUserConfig};

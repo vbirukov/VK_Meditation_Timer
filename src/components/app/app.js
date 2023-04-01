@@ -18,6 +18,7 @@ function App() {
 	const [activeModal, setActiveModal] = useState();
 	const [platform] = useState(platform())
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
+	const [configDuration, setConfigDuration] = useState();
 
 	useEffect(() => {
 		bridge.subscribe((response) => {bridgeEventManager(response)});
@@ -54,6 +55,9 @@ function App() {
 		bridge.send("VKWebAppGetAuthToken", {"app_id": APP_ID, "scope": "friends"})
 			.then((response) => {
 				setState({...state, token: response.access_token});
+				getConfig().then((config) => {
+					setConfigDuration(config.last_timer);
+				});
 			}).catch((e) => {
 			console.log(`error: ${e} `)
 		});
@@ -84,6 +88,7 @@ function App() {
 			<Home
 				id='home'
 				fetchedUser={user}
+				configDuration={configDuration}
 				showInput={() => {
 					setState({...initialState, activeModal: 'timeInputTest'})
 				}}

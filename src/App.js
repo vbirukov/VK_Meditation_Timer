@@ -10,6 +10,7 @@ const App = () => {
 	const [activePanel, setActivePanel] = useState('home');
 	const [fetchedUser, setUser] = useState(null);
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
+	const [configDuration, setConfigDuration] = useState();
 
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
@@ -35,7 +36,7 @@ const App = () => {
 		fetchData().then((user) => {
 			getConfig(user.id).then((userConfig) => {
 				if (userConfig) {
-					applyConfig();
+					applyConfig(userConfig);
 				} else {
 					createUserConfig(user);
 				}
@@ -45,6 +46,7 @@ const App = () => {
 
 	const applyConfig = function (userConfig) {
 		// dispatch user config to store
+		setConfigDuration(userConfig.last_tim ber);
 	}
 
 	const getConfig = async function (userId) {
@@ -107,6 +109,8 @@ const App = () => {
 			<Home
 				id='home'
 				user={fetchedUser}
+				configDuration={configDuration}
+				setNewTimerConfig={setNewTimerConfig}
 				fetchedUser={fetchedUser}
 				showInput={() => {
 					setState({...initialState, activeModal: 'timeInputTest'})

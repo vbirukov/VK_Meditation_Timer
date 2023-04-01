@@ -11,7 +11,7 @@ import {updateLastTimer} from "../../api/reques";
 const TIMER_DURATION_MULTIPLER = 60000;
 const DEFAULT_TIMER_DURATION = 10 * TIMER_DURATION_MULTIPLER;
 const TIMER_MIN_VALUE = 1;
-const TIMER_MAX_VALUE = 1000;
+const TIMER_MAX_VALUE = 180;
 
 class Home extends Component {
 
@@ -70,11 +70,11 @@ class Home extends Component {
 		clearInterval(this.timer)
 	}
 
-	resetTimer() {
+	resetTimer(newDuration) {
 		this.setState({
-			timeLeft: this.state.duration,
+			timeLeft: newDuration || this.state.duration,
 			isOn: false,
-			deadLine: Date.now() + (this.state.duration)
+			deadLine: Date.now() + (newDuration || this.state.duration)
 		})
 	}
 
@@ -82,7 +82,19 @@ class Home extends Component {
 		if (!this.state.isOn) {
 			this.setState({
 				adjustTimer: !this.state.adjustTimer
-			})
+			});
+			if (this.state.adjustTimer) {
+				updateLastTimer(this.props.user.id, this.state.duration);
+			}
+		}
+	}
+
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if (prevProps.configDuration !== this.props.configDuration) {
+			this.setState({
+				duration: this.props.configDuration
+			});
+			this.resetTimer(this.props.configDuration);
 		}
 	}
 
@@ -105,7 +117,7 @@ class Home extends Component {
 						></SimpleCell>
 						<Slider
 							min={1}
-							max={1000}
+							max={TIMER_MAX_VALUE}
 							step={1}
 							value={this.state.duration / TIMER_DURATION_MULTIPLER}
 							onChange={value => {
